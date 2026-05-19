@@ -13,12 +13,14 @@ body{
     text-align:center;
 }
 
+/* JUDUL */
 h1{
     margin-top:20px;
     color:#00e5ff;
     text-shadow:0 0 10px cyan;
 }
 
+/* KARAKTER */
 .characters{
     display:flex;
     justify-content:center;
@@ -66,6 +68,7 @@ h1{
     opacity:0.9;
 }
 
+/* GAME */
 #messageBox{
     background:#1c1c3c;
     padding:20px;
@@ -126,8 +129,8 @@ button:hover{
     font-weight:bold;
 }
 
-.exitBtn{
-    background:#ff4444;
+.menuBtn{
+    background:#00bcd4;
     color:white;
     font-weight:bold;
 }
@@ -137,10 +140,12 @@ button:hover{
 
 <h1>🛡️ CYBER GUARD 🦠</h1>
 
+<!-- START -->
 <div id="startScreen">
 
     <div class="characters">
 
+        <!-- CYBER -->
         <div class="card hero">
             <div class="icon">🤖</div>
             <h2 class="name">CYBER</h2>
@@ -150,6 +155,7 @@ button:hover{
             </p>
         </div>
 
+        <!-- TROJANX -->
         <div class="card enemy">
             <div class="icon">🦠</div>
             <h2 class="name">TROJANX</h2>
@@ -169,6 +175,7 @@ button:hover{
 
 </div>
 
+<!-- GAME -->
 <div id="game" style="display:none;">
 
     <div style="font-size:70px;">
@@ -193,8 +200,9 @@ button:hover{
 
     <h2 id="score">Score: 0 / 50</h2>
 
-    <button class="exitBtn" onclick="exitGame()">
-        ⬅ KELUAR
+    <!-- MENU -->
+    <button class="menuBtn" onclick="backToMenu()">
+        🏠 MENU UTAMA
     </button>
 
     <br>
@@ -207,28 +215,33 @@ button:hover{
 
 <script>
 
+// DATA LINK (LEBIH SUSAH)
 const messages = [
-    { text:"https://secure-bri-login.verify-user.com", type:"phishing" },
-    { text:"https://tokopedia.claim-voucher-gratis.xyz", type:"phishing" },
-    { text:"https://paypal-security-check.ru", type:"phishing" },
-    { text:"https://instagram-bluecheck.freegift.net", type:"phishing" },
-    { text:"https://google.accounts.verify-login.info", type:"phishing" },
-    { text:"http://dana-kaget-hadiah.click", type:"phishing" },
-    { text:"https://update-whatsapp-premium.xyz", type:"phishing" },
-    { text:"https://bankbca-login-confirmation.net", type:"phishing" },
-    { text:"https://steam-free-wallet.top", type:"phishing" },
-    { text:"https://freefire-sultan-skin.gift", type:"phishing" },
 
+    // PHISHING
+    { text:"http://bank-login.xyz", type:"phishing" },
+    { text:"http://freegift123.click", type:"phishing" },
+    { text:"http://secure-akun-verif.net", type:"phishing" },
+    { text:"http://login-bank-fake.com", type:"phishing" },
+    { text:"https://tokopedia-verifikasi.id", type:"phishing" },
+    { text:"https://youtube-premium-gratis.xyz", type:"phishing" },
+    { text:"https://bri-login-security.net", type:"phishing" },
+    { text:"http://hadiah-shopee2026.click", type:"phishing" },
+    { text:"https://google-account-checker.xyz", type:"phishing" },
+    { text:"https://freefire-skin-gratis.net", type:"phishing" },
+
+    // AMAN
     { text:"https://www.google.com", type:"aman" },
     { text:"https://www.youtube.com", type:"aman" },
+    { text:"https://www.bri.co.id", type:"aman" },
     { text:"https://www.tokopedia.com", type:"aman" },
-    { text:"https://www.bca.co.id", type:"aman" },
     { text:"https://store.steampowered.com", type:"aman" },
+    { text:"https://www.microsoft.com", type:"aman" },
+    { text:"https://www.github.com", type:"aman" },
     { text:"https://www.whatsapp.com", type:"aman" },
     { text:"https://www.instagram.com", type:"aman" },
-    { text:"https://dana.id", type:"aman" },
-    { text:"https://www.traveloka.com", type:"aman" },
-    { text:"https://support.google.com", type:"aman" }
+    { text:"https://accounts.google.com", type:"aman" }
+
 ];
 
 let score = 0;
@@ -237,35 +250,50 @@ let shuffledQuestions = [];
 let currentIndex = 0;
 let current;
 
+// SHUFFLE
 function shuffleArray(array){
+
     for(let i=array.length-1;i>0;i--){
+
         let j = Math.floor(Math.random()*(i+1));
+
         [array[i],array[j]] = [array[j],array[i]];
     }
 }
 
+// START
 function startGame(){
+
     document.getElementById("startScreen").style.display = "none";
+
     document.getElementById("game").style.display = "block";
+
     resetGame();
 }
 
+// RESET
 function resetGame(){
+
     score = 0;
     lives = 5;
     currentIndex = 0;
 
     shuffledQuestions = [...messages];
+
     shuffleArray(shuffledQuestions);
 
     document.getElementById("restartBtn").style.display = "none";
+
     document.getElementById("buttons").style.display = "block";
 
     updateHUD();
+
     newQuestion();
 }
 
+// HUD
 function updateHUD(){
+
     document.getElementById("score").innerText =
         "Score: " + score + " / 50";
 
@@ -273,9 +301,13 @@ function updateHUD(){
         "❤️".repeat(lives);
 }
 
+// SOAL BARU
 function newQuestion(){
+
     if(currentIndex >= shuffledQuestions.length){
+
         shuffleArray(shuffledQuestions);
+
         currentIndex = 0;
     }
 
@@ -287,14 +319,18 @@ function newQuestion(){
     document.getElementById("feedback").innerText = "";
 }
 
+// JAWAB
 function answer(choice){
 
     if(choice === current.type){
+
         score += 5;
 
         document.getElementById("feedback").innerHTML =
             "✅ Cyber berhasil memblokir TrojanX! (+5)";
+
     }else{
+
         lives--;
 
         document.getElementById("feedback").innerHTML =
@@ -303,20 +339,28 @@ function answer(choice){
 
     updateHUD();
 
+    // MENANG
     if(score >= 50){
+
         winGame();
+
         return;
     }
 
+    // KALAH
     if(lives <= 0){
+
         gameOver();
+
         return;
     }
 
     setTimeout(newQuestion,800);
 }
 
+// GAME OVER
 function gameOver(){
+
     document.getElementById("messageBox").innerHTML =
         "💀 GAME OVER 💀<br><br>TrojanX berhasil menguasai sistem!";
 
@@ -326,7 +370,9 @@ function gameOver(){
         "inline-block";
 }
 
+// MENANG
 function winGame(){
+
     document.getElementById("messageBox").innerHTML =
         "🏆 VICTORY 🏆<br><br>Cyber berhasil mengalahkan TrojanX dan menyelamatkan sistem!";
 
@@ -336,9 +382,31 @@ function winGame(){
         "inline-block";
 }
 
-function exitGame(){
+// MENU UTAMA
+function backToMenu(){
+
     document.getElementById("game").style.display = "none";
+
     document.getElementById("startScreen").style.display = "block";
+
+    score = 0;
+    lives = 5;
+
+    document.getElementById("score").innerText =
+        "Score: 0 / 50";
+
+    document.getElementById("lives").innerText =
+        "❤️❤️❤️❤️❤️";
+
+    document.getElementById("restartBtn").style.display =
+        "none";
+
+    document.getElementById("buttons").style.display =
+        "block";
+
+    document.getElementById("feedback").innerText = "";
+
+    document.getElementById("messageBox").innerText = "";
 }
 
 </script>
