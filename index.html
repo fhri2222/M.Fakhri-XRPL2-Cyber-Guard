@@ -13,14 +13,12 @@ body{
     text-align:center;
 }
 
-/* JUDUL */
 h1{
     margin-top:20px;
     color:#00e5ff;
     text-shadow:0 0 10px cyan;
 }
 
-/* KARAKTER */
 .characters{
     display:flex;
     justify-content:center;
@@ -36,10 +34,6 @@ h1{
     border-radius:20px;
     background:#15153a;
     box-shadow:0 0 20px rgba(0,255,255,0.3);
-}
-
-.card h2{
-    margin:10px 0;
 }
 
 .hero{
@@ -63,19 +57,12 @@ h1{
     color:#ff3c3c;
 }
 
-.desc{
-    font-size:14px;
-    opacity:0.9;
-}
-
-/* GAME */
 #messageBox{
     background:#1c1c3c;
     padding:20px;
     border-radius:10px;
     width:80%;
     margin:20px auto;
-    word-break:break-all;
     font-size:20px;
 }
 
@@ -86,11 +73,6 @@ button{
     border:none;
     border-radius:10px;
     cursor:pointer;
-    transition:0.2s;
-}
-
-button:hover{
-    transform:scale(1.05);
 }
 
 .aman{
@@ -114,299 +96,177 @@ button:hover{
     margin-top:10px;
 }
 
-#feedback{
-    font-size:22px;
-    margin-top:10px;
-}
-
-#startScreen{
-    margin-top:80px;
-}
-
-.startBtn{
-    background:cyan;
-    color:black;
-    font-weight:bold;
-}
-
-.menuBtn{
-    background:#00bcd4;
-    color:white;
-    font-weight:bold;
-}
 </style>
 </head>
+
 <body>
 
 <h1>🛡️ CYBER GUARD 🦠</h1>
 
-<!-- START -->
 <div id="startScreen">
-
     <div class="characters">
 
-        <!-- CYBER -->
         <div class="card hero">
             <div class="icon">🤖</div>
-            <h2 class="name">CYBER</h2>
-            <p class="desc">
-                Robot AI penjaga internet yang bertugas
-                melindungi pengguna dari phishing dan malware.
-            </p>
+            <h2>CYBER</h2>
         </div>
 
-        <!-- TROJANX -->
         <div class="card enemy">
             <div class="icon">🦠</div>
-            <h2 class="name">TROJANX</h2>
-            <p class="desc">
-                Virus berbahaya dari link phishing
-                yang mencoba mencuri data pengguna.
-            </p>
+            <h2>TROJANX</h2>
         </div>
 
     </div>
 
-    <br>
-
-    <button class="startBtn" onclick="startGame()">
-        START GAME
-    </button>
-
+    <button onclick="startGame()">START GAME</button>
 </div>
 
-<!-- GAME -->
 <div id="game" style="display:none;">
-
-    <div style="font-size:70px;">
-        🤖 ⚔️ 🦠
-    </div>
 
     <div id="lives">❤️❤️❤️❤️❤️</div>
 
     <div id="messageBox"></div>
 
-    <div id="buttons">
-        <button class="aman" onclick="answer('aman')">
-            AMAN
-        </button>
-
-        <button class="phishing" onclick="answer('phishing')">
-            PHISHING
-        </button>
-    </div>
-
-    <div id="feedback"></div>
+    <button class="aman" onclick="answer('aman')">AMAN</button>
+    <button class="phishing" onclick="answer('phishing')">PHISHING</button>
 
     <h2 id="score">Score: 0 / 50</h2>
 
-    <!-- MENU -->
-    <button class="menuBtn" onclick="backToMenu()">
-        🏠 MENU UTAMA
-    </button>
-
-    <br>
-
-    <button id="restartBtn" onclick="resetGame()">
-        ULANG
-    </button>
+    <button onclick="backToMenu()">MENU</button>
+    <button id="restartBtn" onclick="resetGame()">ULANG</button>
 
 </div>
 
 <script>
 
-// DATA LINK (LEBIH SUSAH)
+// ================= SUARA CYBER THEME =================
+const winSound = new Audio("https://cdn.pixabay.com/download/audio/2022/10/16/audio_3a1b6c6c7a.mp3?filename=game-level-complete-143022.mp3");
+
+const loseSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a1f2b5f2b.mp3?filename=negative_beeps-6008.mp3");
+
+winSound.preload = "auto";
+loseSound.preload = "auto";
+
+// unlock audio (biar aman di browser PC)
+function unlockAudio(){
+    winSound.play().then(()=>{winSound.pause(); winSound.currentTime=0;}).catch(()=>{});
+    loseSound.play().then(()=>{loseSound.pause(); loseSound.currentTime=0;}).catch(()=>{});
+}
+
+// ================= GAME DATA =================
 const messages = [
-
-    // PHISHING
     { text:"http://bank-login.xyz", type:"phishing" },
-    { text:"http://freegift123.click", type:"phishing" },
-    { text:"http://secure-akun-verif.net", type:"phishing" },
-    { text:"http://login-bank-fake.com", type:"phishing" },
-    { text:"https://tokopedia-verifikasi.id", type:"phishing" },
-    { text:"https://youtube-premium-gratis.xyz", type:"phishing" },
-    { text:"https://bri-login-security.net", type:"phishing" },
-    { text:"http://hadiah-shopee2026.click", type:"phishing" },
-    { text:"https://google-account-checker.xyz", type:"phishing" },
-    { text:"https://freefire-skin-gratis.net", type:"phishing" },
-
-    // AMAN
     { text:"https://www.google.com", type:"aman" },
+    { text:"http://freegift123.click", type:"phishing" },
     { text:"https://www.youtube.com", type:"aman" },
-    { text:"https://www.bri.co.id", type:"aman" },
-    { text:"https://www.tokopedia.com", type:"aman" },
-    { text:"https://store.steampowered.com", type:"aman" },
-    { text:"https://www.microsoft.com", type:"aman" },
-    { text:"https://www.github.com", type:"aman" },
-    { text:"https://www.whatsapp.com", type:"aman" },
-    { text:"https://www.instagram.com", type:"aman" },
-    { text:"https://accounts.google.com", type:"aman" }
-
+    { text:"https://tokopedia-verifikasi.id", type:"phishing" },
+    { text:"https://www.github.com", type:"aman" }
 ];
 
 let score = 0;
 let lives = 5;
-let shuffledQuestions = [];
-let currentIndex = 0;
 let current;
+let shuffled = [];
+let index = 0;
 
-// SHUFFLE
-function shuffleArray(array){
-
-    for(let i=array.length-1;i>0;i--){
-
-        let j = Math.floor(Math.random()*(i+1));
-
-        [array[i],array[j]] = [array[j],array[i]];
-    }
-}
-
-// START
+// ================= START =================
 function startGame(){
-
     document.getElementById("startScreen").style.display = "none";
-
     document.getElementById("game").style.display = "block";
 
+    unlockAudio();
     resetGame();
 }
 
-// RESET
+// ================= RESET =================
 function resetGame(){
-
     score = 0;
     lives = 5;
-    currentIndex = 0;
+    index = 0;
 
-    shuffledQuestions = [...messages];
-
-    shuffleArray(shuffledQuestions);
+    shuffled = [...messages].sort(()=>Math.random()-0.5);
 
     document.getElementById("restartBtn").style.display = "none";
 
-    document.getElementById("buttons").style.display = "block";
-
     updateHUD();
-
-    newQuestion();
+    nextQuestion();
 }
 
-// HUD
+// ================= HUD =================
 function updateHUD(){
-
-    document.getElementById("score").innerText =
-        "Score: " + score + " / 50";
-
-    document.getElementById("lives").innerText =
-        "❤️".repeat(lives);
+    document.getElementById("score").innerText = "Score: " + score + " / 50";
+    document.getElementById("lives").innerText = "❤️".repeat(lives);
 }
 
-// SOAL BARU
-function newQuestion(){
-
-    if(currentIndex >= shuffledQuestions.length){
-
-        shuffleArray(shuffledQuestions);
-
-        currentIndex = 0;
+// ================= QUESTION =================
+function nextQuestion(){
+    if(index >= shuffled.length){
+        index = 0;
+        shuffled = [...messages].sort(()=>Math.random()-0.5);
     }
 
-    current = shuffledQuestions[currentIndex++];
-
-    document.getElementById("messageBox").innerText =
-        current.text;
-
-    document.getElementById("feedback").innerText = "";
+    current = shuffled[index++];
+    document.getElementById("messageBox").innerText = current.text;
 }
 
-// JAWAB
+// ================= ANSWER =================
 function answer(choice){
 
     if(choice === current.type){
-
         score += 5;
-
-        document.getElementById("feedback").innerHTML =
-            "✅ Cyber berhasil memblokir TrojanX! (+5)";
-
     }else{
-
         lives--;
-
-        document.getElementById("feedback").innerHTML =
-            "❌ TrojanX menyerang sistem!";
     }
 
     updateHUD();
 
-    // MENANG
     if(score >= 50){
-
         winGame();
-
         return;
     }
 
-    // KALAH
     if(lives <= 0){
-
         gameOver();
-
         return;
     }
 
-    setTimeout(newQuestion,800);
+    setTimeout(nextQuestion, 600);
 }
 
-// GAME OVER
-function gameOver(){
-
-    document.getElementById("messageBox").innerHTML =
-        "💀 GAME OVER 💀<br><br>TrojanX berhasil menguasai sistem!";
-
-    document.getElementById("buttons").style.display = "none";
-
-    document.getElementById("restartBtn").style.display =
-        "inline-block";
-}
-
-// MENANG
+// ================= WIN =================
 function winGame(){
 
+    winSound.currentTime = 0;
+    winSound.play().catch(()=>{});
+
+    document.body.style.filter = "hue-rotate(180deg)";
+    setTimeout(()=>document.body.style.filter = "none", 300);
+
     document.getElementById("messageBox").innerHTML =
-        "🏆 VICTORY 🏆<br><br>Cyber berhasil mengalahkan TrojanX dan menyelamatkan sistem!";
+        "🏆 SYSTEM SECURED - VICTORY 🏆";
 
-    document.getElementById("buttons").style.display = "none";
-
-    document.getElementById("restartBtn").style.display =
-        "inline-block";
+    document.getElementById("restartBtn").style.display = "inline-block";
 }
 
-// MENU UTAMA
+// ================= LOSE =================
+function gameOver(){
+
+    loseSound.currentTime = 0;
+    loseSound.play().catch(()=>{});
+
+    document.body.style.filter = "hue-rotate(0deg) contrast(2)";
+    setTimeout(()=>document.body.style.filter = "none", 300);
+
+    document.getElementById("messageBox").innerHTML =
+        "💀 SYSTEM BREACHED - GAME OVER 💀";
+
+    document.getElementById("restartBtn").style.display = "inline-block";
+}
+
+// ================= MENU =================
 function backToMenu(){
-
     document.getElementById("game").style.display = "none";
-
     document.getElementById("startScreen").style.display = "block";
-
-    score = 0;
-    lives = 5;
-
-    document.getElementById("score").innerText =
-        "Score: 0 / 50";
-
-    document.getElementById("lives").innerText =
-        "❤️❤️❤️❤️❤️";
-
-    document.getElementById("restartBtn").style.display =
-        "none";
-
-    document.getElementById("buttons").style.display =
-        "block";
-
-    document.getElementById("feedback").innerText = "";
-
-    document.getElementById("messageBox").innerText = "";
 }
 
 </script>
