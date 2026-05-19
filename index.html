@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Cyber Guard</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:linear-gradient(#050510,#10103a);
+    color:white;
+    text-align:center;
+}
+
+h1{
+    margin-top:20px;
+    color:#00e5ff;
+    text-shadow:0 0 10px cyan;
+}
+
+.characters{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:40px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+
+.card{
+    width:220px;
+    padding:20px;
+    border-radius:20px;
+    background:#15153a;
+    box-shadow:0 0 20px rgba(0,255,255,0.3);
+}
+
+.card h2{
+    margin:10px 0;
+}
+
+.hero{
+    border:2px solid cyan;
+}
+
+.enemy{
+    border:2px solid red;
+    box-shadow:0 0 20px rgba(255,0,0,0.4);
+}
+
+.icon{
+    font-size:90px;
+}
+
+.hero .name{
+    color:cyan;
+}
+
+.enemy .name{
+    color:#ff3c3c;
+}
+
+.desc{
+    font-size:14px;
+    opacity:0.9;
+}
+
+#messageBox{
+    background:#1c1c3c;
+    padding:20px;
+    border-radius:10px;
+    width:80%;
+    margin:20px auto;
+    word-break:break-all;
+    font-size:20px;
+}
+
+button{
+    padding:12px 25px;
+    margin:10px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.aman{
+    background:#2ecc71;
+    color:white;
+}
+
+.phishing{
+    background:#e74c3c;
+    color:white;
+}
+
+#restartBtn{
+    display:none;
+    background:orange;
+    color:white;
+}
+
+#lives{
+    font-size:25px;
+    margin-top:10px;
+}
+
+#feedback{
+    font-size:22px;
+    margin-top:10px;
+}
+
+#startScreen{
+    margin-top:80px;
+}
+
+.startBtn{
+    background:cyan;
+    color:black;
+    font-weight:bold;
+}
+
+.exitBtn{
+    background:#ff4444;
+    color:white;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<h1>🛡️ CYBER GUARD 🦠</h1>
+
+<div id="startScreen">
+
+    <div class="characters">
+
+        <div class="card hero">
+            <div class="icon">🤖</div>
+            <h2 class="name">CYBER</h2>
+            <p class="desc">
+                Robot AI penjaga internet yang bertugas
+                melindungi pengguna dari phishing dan malware.
+            </p>
+        </div>
+
+        <div class="card enemy">
+            <div class="icon">🦠</div>
+            <h2 class="name">TROJANX</h2>
+            <p class="desc">
+                Virus berbahaya dari link phishing
+                yang mencoba mencuri data pengguna.
+            </p>
+        </div>
+
+    </div>
+
+    <br>
+
+    <button class="startBtn" onclick="startGame()">
+        START GAME
+    </button>
+
+</div>
+
+<div id="game" style="display:none;">
+
+    <div style="font-size:70px;">
+        🤖 ⚔️ 🦠
+    </div>
+
+    <div id="lives">❤️❤️❤️❤️❤️</div>
+
+    <div id="messageBox"></div>
+
+    <div id="buttons">
+        <button class="aman" onclick="answer('aman')">
+            AMAN
+        </button>
+
+        <button class="phishing" onclick="answer('phishing')">
+            PHISHING
+        </button>
+    </div>
+
+    <div id="feedback"></div>
+
+    <h2 id="score">Score: 0 / 50</h2>
+
+    <button class="exitBtn" onclick="exitGame()">
+        ⬅ KELUAR
+    </button>
+
+    <br>
+
+    <button id="restartBtn" onclick="resetGame()">
+        ULANG
+    </button>
+
+</div>
+
+<script>
+
+const messages = [
+    { text:"https://secure-bri-login.verify-user.com", type:"phishing" },
+    { text:"https://tokopedia.claim-voucher-gratis.xyz", type:"phishing" },
+    { text:"https://paypal-security-check.ru", type:"phishing" },
+    { text:"https://instagram-bluecheck.freegift.net", type:"phishing" },
+    { text:"https://google.accounts.verify-login.info", type:"phishing" },
+    { text:"http://dana-kaget-hadiah.click", type:"phishing" },
+    { text:"https://update-whatsapp-premium.xyz", type:"phishing" },
+    { text:"https://bankbca-login-confirmation.net", type:"phishing" },
+    { text:"https://steam-free-wallet.top", type:"phishing" },
+    { text:"https://freefire-sultan-skin.gift", type:"phishing" },
+
+    { text:"https://www.google.com", type:"aman" },
+    { text:"https://www.youtube.com", type:"aman" },
+    { text:"https://www.tokopedia.com", type:"aman" },
+    { text:"https://www.bca.co.id", type:"aman" },
+    { text:"https://store.steampowered.com", type:"aman" },
+    { text:"https://www.whatsapp.com", type:"aman" },
+    { text:"https://www.instagram.com", type:"aman" },
+    { text:"https://dana.id", type:"aman" },
+    { text:"https://www.traveloka.com", type:"aman" },
+    { text:"https://support.google.com", type:"aman" }
+];
+
+let score = 0;
+let lives = 5;
+let shuffledQuestions = [];
+let currentIndex = 0;
+let current;
+
+function shuffleArray(array){
+    for(let i=array.length-1;i>0;i--){
+        let j = Math.floor(Math.random()*(i+1));
+        [array[i],array[j]] = [array[j],array[i]];
+    }
+}
+
+function startGame(){
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    resetGame();
+}
+
+function resetGame(){
+    score = 0;
+    lives = 5;
+    currentIndex = 0;
+
+    shuffledQuestions = [...messages];
+    shuffleArray(shuffledQuestions);
+
+    document.getElementById("restartBtn").style.display = "none";
+    document.getElementById("buttons").style.display = "block";
+
+    updateHUD();
+    newQuestion();
+}
+
+function updateHUD(){
+    document.getElementById("score").innerText =
+        "Score: " + score + " / 50";
+
+    document.getElementById("lives").innerText =
+        "❤️".repeat(lives);
+}
+
+function newQuestion(){
+    if(currentIndex >= shuffledQuestions.length){
+        shuffleArray(shuffledQuestions);
+        currentIndex = 0;
+    }
+
+    current = shuffledQuestions[currentIndex++];
+
+    document.getElementById("messageBox").innerText =
+        current.text;
+
+    document.getElementById("feedback").innerText = "";
+}
+
+function answer(choice){
+
+    if(choice === current.type){
+        score += 5;
+
+        document.getElementById("feedback").innerHTML =
+            "✅ Cyber berhasil memblokir TrojanX! (+5)";
+    }else{
+        lives--;
+
+        document.getElementById("feedback").innerHTML =
+            "❌ TrojanX menyerang sistem!";
+    }
+
+    updateHUD();
+
+    if(score >= 50){
+        winGame();
+        return;
+    }
+
+    if(lives <= 0){
+        gameOver();
+        return;
+    }
+
+    setTimeout(newQuestion,800);
+}
+
+function gameOver(){
+    document.getElementById("messageBox").innerHTML =
+        "💀 GAME OVER 💀<br><br>TrojanX berhasil menguasai sistem!";
+
+    document.getElementById("buttons").style.display = "none";
+
+    document.getElementById("restartBtn").style.display =
+        "inline-block";
+}
+
+function winGame(){
+    document.getElementById("messageBox").innerHTML =
+        "🏆 VICTORY 🏆<br><br>Cyber berhasil mengalahkan TrojanX dan menyelamatkan sistem!";
+
+    document.getElementById("buttons").style.display = "none";
+
+    document.getElementById("restartBtn").style.display =
+        "inline-block";
+}
+
+function exitGame(){
+    document.getElementById("game").style.display = "none";
+    document.getElementById("startScreen").style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
